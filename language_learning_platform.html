@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LingoFlux AI - Learn English, French & Spanish (A1 to C2)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- FontAwesome for fallback & extra visual flair -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.3);
+      border-radius: 9999px;
+    }
+    /* Pulsing & Speech Animations for AI Video Avatar Simulation */
+    @keyframes talkPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .avatar-speaking {
+      animation: talkPulse 0.8s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchMode('student')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">LingoFlux</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-semibold ml-1">AI</span>
+        </div>
+      </div>
+
+      <!-- Center Status / Selector (Student View) -->
+      <div id="navStudentStats" class="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <div class="flex items-center space-x-2 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full border border-amber-200/50 dark:border-amber-900/50">
+          <i data-lucide="flame" class="w-4 h-4 fill-amber-500"></i>
+          <span id="streakCount">5</span> Day Streak
+        </div>
+        <div class="flex items-center space-x-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-full border border-indigo-200/50 dark:border-indigo-900/50">
+          <i data-lucide="trophy" class="w-4 h-4"></i>
+          <span id="userPoints">1,240</span> XP
+        </div>
+        <div id="subBadge" class="flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+          <span>A1 Free Pass</span>
+        </div>
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center space-x-3">
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        </button>
+
+        <!-- Admin / Student Mode Toggle Button -->
+        <button id="modeToggleBtn" onclick="toggleMode()" class="flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all shadow-sm bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span id="modeToggleText">Admin Portal</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ========================================================================= -->
+    <!-- 1. STUDENT INTERFACE                                                      -->
+    <!-- ========================================================================= -->
+    <div id="studentView" class="space-y-6">
+
+      <!-- Top Controls: Language & Level Selectors -->
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <!-- Language Selector -->
+        <div class="flex items-center space-x-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Learning:</span>
+          <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
+            <button onclick="setLanguage('en')" id="langBtn-en" class="lang-tab px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400">
+              <span class="text-base">🇬🇧</span>
+              <span>English</span>
+            </button>
+            <button onclick="setLanguage('fr')" id="langBtn-fr" class="lang-tab px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900">
+              <span class="text-base">🇫🇷</span>
+              <span>Français</span>
+            </button>
+            <button onclick="setLanguage('es')" id="langBtn-es" class="lang-tab px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900">
+              <span class="text-base">🇪🇸</span>
+              <span>Español</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Level Selector Tabs (A1 - C2) -->
+        <div class="flex items-center space-x-1 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-2">Level:</span>
+          
+          <button onclick="setLevel('A1')" id="levelBtn-A1" class="level-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-indigo-600 text-white shadow-sm">
+            <span>A1</span>
+            <span class="text-[10px] bg-indigo-500/50 text-indigo-100 px-1 rounded">FREE</span>
+          </button>
+          
+          <button onclick="setLevel('A2')" id="levelBtn-A2" class="level-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200">
+            <span>A2</span>
+            <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+          </button>
+          
+          <button onclick="setLevel('B1')" id="levelBtn-B1" class="level-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200">
+            <span>B1</span>
+            <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+          </button>
+          
+          <button onclick="setLevel('B2')" id="levelBtn-B2" class="level-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200">
+            <span>B2</span>
+            <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+          </button>
+
+          <button onclick="setLevel('C1')" id="levelBtn-C1" class="level-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200">
+            <span>C1</span>
+            <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+          </button>
+
+          <button onclick="setLevel('C2')" id="levelBtn-C2" class="level-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200">
+            <span>C2</span>
+            <i data-lucide="lock" class="w-3 h-3 text-amber-500"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Main Lesson Area -->
+      <div id="lessonContainer" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: AI Avatar Video Simulation & Interactive Blackboard -->
+        <div class="lg:col-col-span-12 lg:col-span-7 space-y-6">
+          
+          <!-- AI Video Player Card -->
+          <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-xl border border-slate-800 flex flex-col relative">
+            
+            <!-- Video Header -->
+            <div class="p-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between text-white">
+              <div class="flex items-center space-x-3">
+                <span id="lessonLangBadge" class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Spanish A1</span>
+                <h3 id="lessonTitleDisplay" class="font-bold text-sm sm:text-base truncate max-w-[250px] sm:max-w-md">Greetings & Introduction</h3>
+              </div>
+              <div class="flex items-center space-x-2 text-xs text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>AI Teacher Active</span>
+              </div>
+            </div>
+
+            <!-- Avatar & Board Simulation Viewport -->
+            <div class="relative bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 p-6 sm:p-8 min-h-[340px] flex flex-col sm:flex-row items-center justify-between gap-6">
+              
+              <!-- AI Avatar Model -->
+              <div class="flex flex-col items-center text-center relative z-10 shrink-0">
+                <div id="avatarContainer" class="relative group cursor-pointer" onclick="toggleAvatarSpeech()">
+                  <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-1 shadow-2xl shadow-indigo-500/30">
+                    <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center overflow-hidden relative">
+                      <!-- SVG Avatar Graphics -->
+                      <div id="avatarGraphic" class="text-indigo-400 flex flex-col items-center pt-2">
+                        <i data-lucide="bot" class="w-16 h-16 sm:w-20 sm:h-20 text-indigo-400 transition-transform"></i>
+                        <span class="text-[10px] font-mono text-indigo-300 uppercase mt-1">Prof. Flux</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Speaking Indicator Ripple -->
+                  <div id="speechRipple" class="absolute inset-0 rounded-full border-2 border-indigo-400/50 animate-ping opacity-0"></div>
+                </div>
+
+                <!-- Speech Bubble -->
+                <div class="mt-3 bg-slate-800/90 text-slate-200 text-xs px-3 py-1.5 rounded-full border border-slate-700 flex items-center space-x-1.5 shadow-lg">
+                  <i data-lucide="volume-2" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span id="avatarStatusText">Click teacher to speak</span>
+                </div>
+              </div>
+
+              <!-- Interactive Lesson Board -->
+              <div class="flex-1 w-full bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 sm:p-5 text-slate-100 flex flex-col justify-between shadow-inner min-h-[200px]">
+                <div>
+                  <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-800">
+                    <span class="text-xs font-mono text-indigo-400 flex items-center gap-1">
+                      <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Video Script Focus
+                    </span>
+                    <button onclick="speakCurrentScript()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded-md transition flex items-center gap-1">
+                      <i data-lucide="play" class="w-3 h-3"></i> Audio
+                    </button>
+                  </div>
+                  <p id="videoScriptText" class="text-sm sm:text-base leading-relaxed text-slate-200 font-medium italic">
+                    "¡Hola! Welcome to your first Spanish lesson. Today we will learn essential greetings to introduce yourself confidently."
+                  </p>
+                </div>
+                
+                <!-- Script Progress & Controls -->
+                <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <div class="flex items-center space-x-2">
+                    <button onclick="simulatedVideoPlayback('prev')" class="hover:text-white"><i data-lucide="skip-back" class="w-4 h-4"></i></button>
+                    <button id="playPauseBtn" onclick="togglePlayPause()" class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-500 transition">
+                      <i data-lucide="play" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="simulatedVideoPlayback('next')" class="hover:text-white"><i data-lucide="skip-forward" class="w-4 h-4"></i></button>
+                  </div>
+                  <span id="videoTimeDisplay">00:15 / 02:30</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Grammar & Explanation Card -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+            <div class="flex items-center space-x-3 text-indigo-600 dark:text-indigo-400">
+              <i data-lucide="book-open" class="w-6 h-6"></i>
+              <h3 class="text-lg font-bold">Grammar & Lesson Key Points</h3>
+            </div>
+            <div id="grammarContent" class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
+              <!-- Dynamic Content Loaded Here -->
+            </div>
+          </div>
+
+          <!-- Interactive Vocabulary Grid -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/60 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3 text-indigo-600 dark:text-indigo-400">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+                <h3 class="text-lg font-bold">Vocabulary Cards</h3>
+              </div>
+              <span class="text-xs text-slate-400">Click card for audio</span>
+            </div>
+
+            <div id="vocabGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Dynamic Cards Inserted Here -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Interactive Practice Quiz -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex flex-col h-full justify-between">
+            
+            <div>
+              <!-- Quiz Header -->
+              <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-700 mb-6">
+                <div class="flex items-center space-x-2">
+                  <div class="p-2 rounded-xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400">
+                    <i data-lucide="help-circle" class="w-5 h-5"></i>
+                  </div>
+                  <h3 class="font-bold text-lg">Interactive Quiz</h3>
+                </div>
+                <span id="quizScoreText" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-full">
+                  Question 1/3
+                </span>
+              </div>
+
+              <!-- Question Container -->
+              <div id="quizContainer" class="space-y-6">
+                <!-- Dynamic Quiz Loaded Here -->
+              </div>
+            </div>
+
+            <!-- Quiz Controls & Result Alert -->
+            <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-700 space-y-3">
+              <div id="quizFeedback" class="hidden p-3 rounded-xl text-xs font-semibold text-center"></div>
+
+              <div class="flex space-x-3">
+                <button onclick="submitQuizAnswer()" id="submitQuizBtn" class="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-500/20 transition flex items-center justify-center space-x-2">
+                  <span>Check Answer</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+                <button onclick="nextQuizQuestion()" id="nextQuizBtn" class="hidden flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-500/20 transition flex items-center justify-center space-x-2">
+                  <span>Next Question</span>
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 2. ADMIN DASHBOARD                                                         -->
+    <!-- ========================================================================= -->
+    <div id="adminView" class="hidden space-y-8">
+      
+      <!-- Dashboard Top Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-bold mb-3">
+              <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+              <span>Administrator Portal</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Platform Management & AI Engine</h1>
+            <p class="text-slate-400 text-sm mt-1">Generate new AI courses instantly, manage curriculum lock settings, and monitor subscription metrics.</p>
+          </div>
+          <button onclick="switchMode('student')" class="self-start md:self-auto px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold backdrop-blur-md transition flex items-center space-x-2 border border-white/10">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+            <span>Preview Student View</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Analytics Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1 -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Students</p>
+            <h4 class="text-2xl font-extrabold mt-0.5">14,280</h4>
+            <span class="text-[11px] text-emerald-500 font-bold">↑ +12% this week</span>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <i data-lucide="credit-card" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Premium Subs</p>
+            <h4 class="text-2xl font-extrabold mt-0.5">3,890</h4>
+            <span class="text-[11px] text-emerald-500 font-bold">27.2% conversion</span>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
+            <i data-lucide="cpu" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Generated Lessons</p>
+            <h4 id="adminTotalLessonsCount" class="text-2xl font-extrabold mt-0.5">18</h4>
+            <span class="text-[11px] text-indigo-500 font-bold">AI Auto-Curriculum</span>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-sm flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Est. Monthly MRR</p>
+            <h4 class="text-2xl font-extrabold mt-0.5">$38,860</h4>
+            <span class="text-[11px] text-emerald-500 font-bold">↑ +18.4% MRR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI GENERATION PANEL & CONTROL -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: AI Generator Form -->
+        <div class="lg:col-span-5 bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/60 space-y-6">
+          <div class="flex items-center space-x-3 text-indigo-600 dark:text-indigo-400 pb-3 border-b border-slate-100 dark:border-slate-700">
+            <i data-lucide="wand2" class="w-6 h-6"></i>
+            <div>
+              <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">🤖 Generate Lesson with AI</h3>
+              <p class="text-xs text-slate-400">Instantly generate script, grammar, vocabulary & quiz items.</p>
+            </div>
+          </div>
+
+          <form id="aiGenerateForm" onsubmit="handleAiGenerate(event)" class="space-y-4">
+            <!-- Language Selection -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Language</label>
+              <select id="genLangSelect" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="es">Spanish (Español)</option>
+                <option value="fr">French (Français)</option>
+                <option value="en">English (English)</option>
+              </select>
+            </div>
+
+            <!-- Level Selection -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">CEFR Level</label>
+              <select id="genLevelSelect" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="A1">A1 - Beginner (Free Tier)</option>
+                <option value="A2">A2 - Elementary (Premium)</option>
+                <option value="B1">B1 - Intermediate (Premium)</option>
+                <option value="B2">B2 - Upper Intermediate (Premium)</option>
+                <option value="C1">C1 - Advanced (Premium)</option>
+                <option value="C2">C2 - Mastery / Proficient (Premium)</option>
+              </select>
+            </div>
+
+            <!-- Topic / Prompt -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Topic or Focus Area</label>
+              <input type="text" id="genTopicInput" required placeholder="e.g. Job Interview Preparation, Ordering Food in Paris, Past Tense Verbs" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="genSubmitBtn" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-md shadow-indigo-500/20 transition flex items-center justify-center space-x-2">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Generate & Publish Lesson</span>
+            </button>
+          </form>
+
+          <!-- Loading Spinner Box (Hidden by default) -->
+          <div id="aiLoadingState" class="hidden p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-center space-y-2">
+            <div class="inline-block animate-spin text-indigo-600 dark:text-indigo-400">
+              <i data-lucide="loader-2" class="w-6 h-6"></i>
+            </div>
+            <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400">AI Engine is drafting avatar script, vocabulary & quiz...</p>
+          </div>
+        </div>
+
+        <!-- Right Column: Lesson Management Table -->
+        <div class="lg:col-span-7 bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-700 mb-4">
+              <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Curriculum & Lesson Database</h3>
+              
+              <!-- Filter Dropdowns -->
+              <div class="flex items-center space-x-2">
+                <select id="adminFilterLang" onchange="renderAdminLessonTable()" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs px-2.5 py-1.5 font-medium">
+                  <option value="all">All Languages</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Lessons Table -->
+            <div class="overflow-x-auto max-h-[380px] overflow-y-auto custom-scrollbar">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-2">
+                    <th class="py-2 px-3">Lang / Level</th>
+                    <th class="py-2 px-3">Lesson Title</th>
+                    <th class="py-2 px-3">Access</th>
+                    <th class="py-2 px-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminLessonTableBody" class="text-sm divide-y divide-slate-100 dark:divide-slate-700/50">
+                  <!-- Dynamic Table Rows Loaded Here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-400">
+            <span>Click toggle to change Free/Paid status anytime</span>
+            <button onclick="resetDefaultLessons()" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">Reset Default Data</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: PREMIUM SUBSCRIPTION PAYWALL (A2 - C2 LOCK)                        -->
+  <!-- ========================================================================= -->
+  <div id="subModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative overflow-hidden transform scale-95 transition-transform duration-200" id="subModalContainer">
+      
+      <!-- Close Button -->
+      <button onclick="closeSubModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Badge Header -->
+      <div class="text-center space-y-3">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/30">
+          <i data-lucide="crown" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white">Unlock <span id="lockedLevelName">A2</span> to C2 Levels</h3>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">Level A1 is 100% Free forever. Upgrade to Premium to master intermediate & advanced levels in all languages.</p>
+      </div>
+
+      <!-- Feature List -->
+      <div class="mt-6 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+        <div class="flex items-center space-x-3">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+          <span>Unlimited Access to <strong>A2, B1, B2, C1 & C2</strong></span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+          <span>AI Teacher Video Simulations & Pronunciation</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+          <span>Interactive Quizzes & Instant Certificates</span>
+        </div>
+      </div>
+
+      <!-- Pricing Plans -->
+      <div class="mt-6 space-y-3">
+        <button onclick="simulateSubscribe()" class="w-full p-4 rounded-2xl border-2 border-indigo-600 dark:border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40 flex items-center justify-between hover:bg-indigo-100/50 transition">
+          <div class="text-left">
+            <p class="font-extrabold text-slate-900 dark:text-white">Annual VIP Pass</p>
+            <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold">$9.99 / month (Billed yearly)</p>
+          </div>
+          <span class="text-xs bg-indigo-600 text-white font-extrabold px-2.5 py-1 rounded-full">Save 50%</span>
+        </button>
+
+        <button onclick="simulateSubscribe()" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+          <div class="text-left">
+            <p class="font-bold text-sm text-slate-800 dark:text-slate-200">Monthly Pass</p>
+            <p class="text-xs text-slate-400">$19.99 / month</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Action Button -->
+      <div class="mt-6 text-center">
+        <button onclick="simulateSubscribe()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold shadow-lg shadow-orange-500/25 transition">
+          Start 7-Day Free Trial
+        </button>
+        <p class="text-[11px] text-slate-400 mt-2">Cancel anytime in 1-click. No commitments.</p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT APP LOGIC & STATE MANAGEMENT                                   -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. INITIAL APP STATE DATABASE & SEEDS
+    // -------------------------------------------------------------------------
+    const initialLessonDatabase = [
+      // SPANISH LESSONS
+      {
+        id: "es-a1-1",
+        lang: "es",
+        level: "A1",
+        title: "Salutations et Présentations",
+        isFree: true,
+        script: "¡Hola! Bienvenidos a la primera lección de español. Hoy aprenderemos a saludar ya presentarnos con confianza.",
+        grammar: "<strong>Grammar Point:</strong> In Spanish, <em>'Hola'</em> is used for Hello. To ask 'How are you?', use <em>'¿Cómo estás?'</em> (informal) or <em>'¿Cómo está usted?'</em> (formal). Conjugate the verb <strong>Estar</strong>.",
+        vocab: [
+          { word: "¡Hola!", translation: "Hello / Hi", audioText: "Hola" },
+          { word: "Buenos días", translation: "Good morning", audioText: "Buenos días" },
+          { word: "¿Cómo te llamas?", translation: "What is your name?", audioText: "Cómo te llamas" },
+          { word: "Mucho gusto", translation: "Nice to meet you", audioText: "Mucho gusto" }
+        ],
+        quiz: [
+          {
+            question: "How do you say 'Good morning' in Spanish?",
+            options: ["Buenas noches", "Buenos días", "Hasta luego", "Por favor"],
+            correct: 1
+          },
+          {
+            question: "What is the polite phrase for 'Nice to meet you'?",
+            options: ["Mucho gusto", "De nada", "Lo siento", "Gracias"],
+            correct: 0
+          }
+        ]
+      },
+      {
+        id: "es-a2-1",
+        lang: "es",
+        level: "A2",
+        title: "Raconter un Événement Passé (Pretérito)",
+        isFree: false,
+        script: "Ayer visité un museo increíble en Madrid. Hoy aprenderemos cómo hablar de acciones terminadas en el pasado.",
+        grammar: "<strong>Grammar Point:</strong> Use the <em>Pretérito Indefinido</em> for completed past actions. Example: <em>Comí</em> (I ate), <em>Viajé</em> (I traveled). Regular -ar verbs take: -é, -aste, -ó, -amos, -aron.",
+        vocab: [
+          { word: "Ayer", translation: "Yesterday", audioText: "Ayer" },
+          { word: "El año pasado", translation: "Last year", audioText: "El año pasado" },
+          { word: "Compré", translation: "I bought", audioText: "Compré" },
+          { word: "Fuimos", translation: "We went", audioText: "Fuimos" }
+        ],
+        quiz: [
+          {
+            question: "Which verb form means 'I traveled' in Spanish?",
+            options: ["Viajo", "Viajé", "Viajaré", "Viajando"],
+            correct: 1
+          }
+        ]
+      },
+      // FRENCH LESSONS
+      {
+        id: "fr-a1-1",
+        lang: "fr",
+        level: "A1",
+        title: "Les Salutations et la Politesse",
+        isFree: true,
+        script: "Bonjour tout le monde! Bienvenue dans ce cours de français. Aujourd'hui, nous allons apprendre à saluer et être poli.",
+        grammar: "<strong>Grammar Point:</strong> Use <em>'Bonjour'</em> during the day and <em>'Bonsoir'</em> in the evening. Always use <em>'S'il vous plaît'</em> for formal courtesy.",
+        vocab: [
+          { word: "Bonjour", translation: "Hello / Good day", audioText: "Bonjour" },
+          { word: "S'il vous plaît", translation: "Please (formal)", audioText: "S'il vous plaît" },
+          { word: "Merci beaucoup", translation: "Thank you very much", audioText: "Merci beaucoup" },
+          { word: "Au revoir", translation: "Goodbye", audioText: "Au revoir" }
+        ],
+        quiz: [
+          {
+            question: "How do you say 'Thank you very much' in French?",
+            options: ["S'il vous plaît", "De rien", "Merci beaucoup", "Bonjour"],
+            correct: 2
+          }
+        ]
+      },
+      // ENGLISH LESSONS
+      {
+        id: "en-a1-1",
+        lang: "en",
+        level: "A1",
+        title: "Basic Greetings & To Be Verb",
+        isFree: true,
+        script: "Hello! Welcome to LingoFlux English. Today we will master basic introductions and the essential verb 'To Be'.",
+        grammar: "<strong>Grammar Point:</strong> The verb 'To Be' forms: I am, You are, He/She/It is. Example: <em>'I am a student'</em>.",
+        vocab: [
+          { word: "Welcome", translation: "Bienvenido / Bienvenue", audioText: "Welcome" },
+          { word: "Nice to meet you", translation: "Encantado / Enchanté", audioText: "Nice to meet you" },
+          { word: "Student", translation: "Estudiante / Étudiant", audioText: "Student" }
+        ],
+        quiz: [
+          {
+            question: "Complete the sentence: 'She ___ a great doctor.'",
+            options: ["am", "are", "is", "be"],
+            correct: 2
+          }
+        ]
+      }
+    ];
+
+    // State object
+    let appState = {
+      mode: 'student', // 'student' or 'admin'
+      currentLang: 'es',
+      currentLevel: 'A1',
+      isSubscribed: false,
+      userStreak: 5,
+      userXP: 1240,
+      lessons: JSON.parse(localStorage.getItem('lingoflux_lessons')) || initialLessonDatabase,
+      activeLesson: null,
+      currentQuizIdx: 0,
+      selectedQuizOption: null,
+      isPlayingAudio: false
+    };
+
+    // -------------------------------------------------------------------------
+    // 2. CORE CONTROLLER FUNCTIONS
+    // -------------------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      updateActiveLesson();
+      renderStudentUI();
+      renderAdminLessonTable();
+    });
+
+    function saveStateToStorage() {
+      localStorage.setItem('lingoflux_lessons', JSON.stringify(appState.lessons));
+    }
+
+    function toggleMode() {
+      appState.mode = appState.mode === 'student' ? 'admin' : 'student';
+      const studentView = document.getElementById('studentView');
+      const adminView = document.getElementById('adminView');
+      const modeBtnText = document.getElementById('modeToggleText');
+
+      if (appState.mode === 'admin') {
+        studentView.classList.add('hidden');
+        adminView.classList.remove('hidden');
+        modeBtnText.innerText = "Student App View";
+      } else {
+        adminView.classList.add('hidden');
+        studentView.classList.remove('hidden');
+        modeBtnText.innerText = "Admin Portal";
+        renderStudentUI();
+      }
+    }
+
+    function switchMode(target) {
+      if (appState.mode !== target) {
+        toggleMode();
+      }
+    }
+
+    function setLanguage(lang) {
+      appState.currentLang = lang;
+      
+      // Update UI Tabs
+      document.querySelectorAll('.lang-tab').forEach(btn => {
+        btn.className = "lang-tab px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900";
+      });
+      const activeBtn = document.getElementById(`langBtn-${lang}`);
+      if (activeBtn) {
+        activeBtn.className = "lang-tab px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400";
+      }
+
+      updateActiveLesson();
+      renderStudentUI();
+    }
+
+    function setLevel(lvl) {
+      // Check Freemium Restrictions
+      if (lvl !== 'A1' && !appState.isSubscribed) {
+        openSubModal(lvl);
+        return;
+      }
+
+      appState.currentLevel = lvl;
+
+      // Update UI Tabs
+      document.querySelectorAll('.level-tab').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('bg-slate-100', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400');
+      });
+      
+      const activeBtn = document.getElementById(`levelBtn-${lvl}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400');
+        activeBtn.classList.add('bg-indigo-600', 'text-white');
+      }
+
+      updateActiveLesson();
+      renderStudentUI();
+    }
+
+    function updateActiveLesson() {
+      // Find matching lesson in database or create fallback placeholder
+      const match = appState.lessons.find(l => l.lang === appState.currentLang && l.level === appState.currentLevel);
+      if (match) {
+        appState.activeLesson = match;
+      } else {
+        // Fallback auto-template if none exists yet for this level/lang
+        appState.activeLesson = {
+          id: `temp-${appState.currentLang}-${appState.currentLevel}`,
+          lang: appState.currentLang,
+          level: appState.currentLevel,
+          title: `${getLangName(appState.currentLang)} ${appState.currentLevel} Module`,
+          isFree: appState.currentLevel === 'A1',
+          script: `Welcome to ${getLangName(appState.currentLang)} ${appState.currentLevel}. Use the Admin panel to generate full AI content for this level!`,
+          grammar: `Grammar topics for ${appState.currentLevel} are currently being updated by AI.`,
+          vocab: [
+            { word: "Lección", translation: "Lesson", audioText: "Lección" },
+            { word: "Aprender", translation: "To learn", audioText: "Aprender" }
+          ],
+          quiz: [
+            {
+              question: "Ready to practice this module?",
+              options: ["Yes, let's start!", "Need review"],
+              correct: 0
+            }
+          ]
+        };
+      }
+      appState.currentQuizIdx = 0;
+      appState.selectedQuizOption = null;
+    }
+
+    function getLangName(code) {
+      if (code === 'es') return 'Spanish';
+      if (code === 'fr') return 'French';
+      return 'English';
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. STUDENT UI RENDERING
+    // -------------------------------------------------------------------------
+    function renderStudentUI() {
+      const lesson = appState.activeLesson;
+      if (!lesson) return;
+
+      // Update Header & Lesson Badges
+      document.getElementById('lessonLangBadge').innerText = `${getLangName(lesson.lang)} ${lesson.level}`;
+      document.getElementById('lessonTitleDisplay').innerText = lesson.title;
+      document.getElementById('videoScriptText').innerText = `"${lesson.script}"`;
+      document.getElementById('grammarContent').innerHTML = lesson.grammar;
+
+      // Render Vocab Cards
+      const vocabGrid = document.getElementById('vocabGrid');
+      vocabGrid.innerHTML = lesson.vocab.map((v, idx) => `
+        <div onclick="playAudioText('${v.audioText || v.word}')" class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500/50 bg-slate-50/50 dark:bg-slate-900/50 cursor-pointer transition flex items-center justify-between group">
+          <div>
+            <p class="font-bold text-sm text-slate-800 dark:text-slate-100">${v.word}</p>
+            <p class="text-xs text-slate-400 mt-0.5">${v.translation}</p>
+          </div>
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">
+            <i data-lucide="volume-2" class="w-4 h-4"></i>
+          </div>
+        </div>
+      `).join('');
+
+      renderQuizQuestion();
+      lucide.createIcons();
+    }
+
+    function renderQuizQuestion() {
+      const lesson = appState.activeLesson;
+      const quizContainer = document.getElementById('quizContainer');
+      const scoreText = document.getElementById('quizScoreText');
+      const feedback = document.getElementById('quizFeedback');
+      
+      feedback.classList.add('hidden');
+      document.getElementById('submitQuizBtn').classList.remove('hidden');
+      document.getElementById('nextQuizBtn').classList.add('hidden');
+
+      if (!lesson.quiz || lesson.quiz.length === 0) {
+        quizContainer.innerHTML = `<p class="text-xs text-slate-400">No quiz items available for this lesson.</p>`;
+        return;
+      }
+
+      const q = lesson.quiz[appState.currentQuizIdx];
+      scoreText.innerText = `Question ${appState.currentQuizIdx + 1}/${lesson.quiz.length}`;
+
+      quizContainer.innerHTML = `
+        <div class="space-y-4">
+          <h4 class="font-bold text-base sm:text-lg text-slate-800 dark:text-slate-100">${q.question}</h4>
+          <div class="space-y-2.5">
+            ${q.options.map((opt, i) => `
+              <button onclick="selectQuizOption(${i})" id="quizOpt-${i}" class="quiz-opt-btn w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-left font-medium text-sm transition flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                <span>${opt}</span>
+                <span class="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center text-[10px] text-slate-400">${String.fromCharCode(65 + i)}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectQuizOption(idx) {
+      appState.selectedQuizOption = idx;
+      document.querySelectorAll('.quiz-opt-btn').forEach((btn, i) => {
+        if (i === idx) {
+          btn.className = "quiz-opt-btn w-full p-3.5 rounded-xl border-2 border-indigo-600 dark:border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40 font-bold text-sm text-indigo-900 dark:text-indigo-200 flex items-center justify-between";
+        } else {
+          btn.className = "quiz-opt-btn w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-left font-medium text-sm transition flex items-center justify-between opacity-60";
+        }
+      });
+    }
+
+    function submitQuizAnswer() {
+      if (appState.selectedQuizOption === null) return;
+
+      const q = appState.activeLesson.quiz[appState.currentQuizIdx];
+      const feedback = document.getElementById('quizFeedback');
+      feedback.classList.remove('hidden');
+
+      if (appState.selectedQuizOption === q.correct) {
+        feedback.className = "p-3 rounded-xl text-xs font-bold text-center bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300";
+        feedback.innerHTML = "🎉 Correct! Great job +50 XP";
+        appState.userXP += 50;
+        document.getElementById('userPoints').innerText = appState.userXP.toLocaleString();
+      } else {
+        feedback.className = "p-3 rounded-xl text-xs font-bold text-center bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300";
+        feedback.innerHTML = `❌ Incorrect. The correct answer was: "${q.options[q.correct]}"`;
+      }
+
+      document.getElementById('submitQuizBtn').classList.add('hidden');
+      document.getElementById('nextQuizBtn').classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+      const qLength = appState.activeLesson.quiz.length;
+      if (appState.currentQuizIdx < qLength - 1) {
+        appState.currentQuizIdx++;
+        appState.selectedQuizOption = null;
+        renderQuizQuestion();
+      } else {
+        alert("🏆 Module Quiz Complete! You've earned your progress XP.");
+        appState.currentQuizIdx = 0;
+        renderQuizQuestion();
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. AI AVATAR & AUDIO SIMULATION
+    // -------------------------------------------------------------------------
+    function toggleAvatarSpeech() {
+      speakCurrentScript();
+    }
+
+    function speakCurrentScript() {
+      const text = appState.activeLesson?.script || "Welcome to LingoFlux";
+      playAudioText(text);
+    }
+
+    function playAudioText(text) {
+      const avatarGraphic = document.getElementById('avatarGraphic');
+      const statusText = document.getElementById('avatarStatusText');
+      const ripple = document.getElementById('speechRipple');
+
+      // Speech Synthesis API
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Match language voice if available
+        if (appState.currentLang === 'es') utterance.lang = 'es-ES';
+        else if (appState.currentLang === 'fr') utterance.lang = 'fr-FR';
+        else utterance.lang = 'en-US';
+
+        utterance.onstart = () => {
+          avatarGraphic.classList.add('avatar-speaking');
+          ripple.classList.remove('opacity-0');
+          statusText.innerText = "Speaking...";
+        };
+
+        utterance.onend = () => {
+          avatarGraphic.classList.remove('avatar-speaking');
+          ripple.classList.add('opacity-0');
+          statusText.innerText = "Click teacher to speak";
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("Simulated Audio: " + text);
+      }
+    }
+
+    function simulatedVideoPlayback(action) {
+      if (action === 'next') {
+        alert("Fast-forwarding to next AI video keypoint...");
+      } else {
+        alert("Rewinding to previous AI video phrase...");
+      }
+    }
+
+    function togglePlayPause() {
+      const btn = document.getElementById('playPauseBtn');
+      if (appState.isPlayingAudio) {
+        window.speechSynthesis?.cancel();
+        appState.isPlayingAudio = false;
+        btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i>`;
+      } else {
+        speakCurrentScript();
+        appState.isPlayingAudio = true;
+        btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i>`;
+      }
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. ADMIN DASHBOARD & AI GENERATOR LOGIC
+    // -------------------------------------------------------------------------
+    function renderAdminLessonTable() {
+      const tbody = document.getElementById('adminLessonTableBody');
+      const langFilter = document.getElementById('adminFilterLang').value;
+      
+      document.getElementById('adminTotalLessonsCount').innerText = appState.lessons.length;
+
+      let filtered = appState.lessons;
+      if (langFilter !== 'all') {
+        filtered = filtered.filter(l => l.lang === langFilter);
+      }
+
+      tbody.innerHTML = filtered.map(l => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+          <td class="py-3 px-3 font-bold">
+            <span class="uppercase text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 mr-1">${l.lang}</span>
+            <span class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">${l.level}</span>
+          </td>
+          <td class="py-3 px-3 font-semibold text-slate-800 dark:text-slate-200">${l.title}</td>
+          <td class="py-3 px-3">
+            <button onclick="toggleLessonAccess('${l.id}')" class="text-xs font-bold px-2.5 py-1 rounded-full ${l.isFree ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'} transition">
+              ${l.isFree ? 'FREE (A1 Pass)' : 'PREMIUM'}
+            </button>
+          </td>
+          <td class="py-3 px-3 text-right space-x-2">
+            <button onclick="deleteLesson('${l.id}')" class="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function handleAiGenerate(e) {
+      e.preventDefault();
+      const lang = document.getElementById('genLangSelect').value;
+      const level = document.getElementById('genLevelSelect').value;
+      const topic = document.getElementById('genTopicInput').value;
+
+      document.getElementById('genSubmitBtn').classList.add('hidden');
+      document.getElementById('aiLoadingState').classList.remove('hidden');
+
+      // Simulate Real-time AI Generation Delay
+      setTimeout(() => {
+        const newLesson = {
+          id: `${lang}-${level.toLowerCase()}-${Date.now()}`,
+          lang: lang,
+          level: level,
+          title: topic,
+          isFree: level === 'A1',
+          script: `Welcome to this AI-generated module on "${topic}". In this lesson, we break down essential fluency rules for ${getLangName(lang)} at the ${level} level.`,
+          grammar: `<strong>AI Grammar Analysis for ${topic}:</strong> Focus on contextual precision, idiomatic expressions, and sentence structures required for ${level} level mastery.`,
+          vocab: [
+            { word: `${topic} Term 1`, translation: "Key concept 1", audioText: topic },
+            { word: `${topic} Term 2`, translation: "Key concept 2", audioText: topic }
+          ],
+          quiz: [
+            {
+              question: `Which strategy is key when studying "${topic}"?`,
+              options: ["Consistent daily practice", "Memorizing without context", "Skipping grammar"],
+              correct: 0
+            }
+          ]
+        };
+
+        appState.lessons.unshift(newLesson);
+        saveStateToStorage();
+
+        document.getElementById('genSubmitBtn').classList.remove('hidden');
+        document.getElementById('aiLoadingState').classList.add('hidden');
+        document.getElementById('genTopicInput').value = '';
+
+        renderAdminLessonTable();
+        alert(`✨ AI Lesson Successfully Generated & Published for ${getLangName(lang)} (${level})!`);
+      }, 1500);
+    }
+
+    function toggleLessonAccess(id) {
+      const lesson = appState.lessons.find(l => l.id === id);
+      if (lesson) {
+        lesson.isFree = !lesson.isFree;
+        saveStateToStorage();
+        renderAdminLessonTable();
+      }
+    }
+
+    function deleteLesson(id) {
+      if (confirm("Are you sure you want to delete this AI-generated lesson?")) {
+        appState.lessons = appState.lessons.filter(l => l.id !== id);
+        saveStateToStorage();
+        renderAdminLessonTable();
+      }
+    }
+
+    function resetDefaultLessons() {
+      if (confirm("Reset lessons database to default seed data?")) {
+        appState.lessons = [...initialLessonDatabase];
+        saveStateToStorage();
+        renderAdminLessonTable();
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. MODAL & PAYWALL FREEMIUM CONTROLLER
+    // -------------------------------------------------------------------------
+    function openSubModal(lvl) {
+      document.getElementById('lockedLevelName').innerText = lvl;
+      const modal = document.getElementById('subModal');
+      const container = document.getElementById('subModalContainer');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      container.classList.remove('scale-95');
+      container.classList.add('scale-100');
+    }
+
+    function closeSubModal() {
+      const modal = document.getElementById('subModal');
+      const container = document.getElementById('subModalContainer');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      container.classList.remove('scale-100');
+      container.classList.add('scale-95');
+    }
+
+    function simulateSubscribe() {
+      appState.isSubscribed = true;
+      document.getElementById('subBadge').innerHTML = `
+        <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-500"></i>
+        <span class="text-amber-600 dark:text-amber-400 font-extrabold">VIP Premium Pass</span>
+      `;
+      closeSubModal();
+      alert("🎉 Welcome to LingoFlux VIP Premium! All Levels (A1 to C2) are now unlocked.");
+      lucide.createIcons();
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
+  </script>
+</body>
+</html>
